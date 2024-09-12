@@ -214,7 +214,7 @@ def vis_3d_multiple_skeleton_with_angles(kpt_3d, kpt_3d_vis, kps_lines, joint_an
     ax.set_zlabel('Y Label')
 
     plt.show()
-    
+  
 def main():
     args = parse_args()
     cfg.set_args(args.gpu_ids)
