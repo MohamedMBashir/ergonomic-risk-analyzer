@@ -23,6 +23,7 @@ from model import get_pose_net
 from dataset import generate_patch_image
 from root_demo import get_root_depth
 from utils.yolo_utils import get_bbox_list
+from utils.risk_score import calculate_rula_score
 from utils.pose_utils import process_bbox, pixel2cam
 from utils.vis import vis_keypoints, vis_3d_multiple_skeleton
 # from risk_score import calculate_rula_score
@@ -166,7 +167,7 @@ def print_joint_angles(output_pose_3d_list):
             print(f"  {joint_names}: {angle:.2f} degrees")
         print()
 
-def vis_3d_multiple_skeleton_with_angles(kpt_3d, kpt_3d_vis, kps_lines, joint_angles, filename=None):
+def vis_3d_multiple_skeleton_with_rula_angles(kpt_3d, kpt_3d_vis, kps_lines, rula_angles, filename=None):
     fig = plt.figure(figsize=(12, 8))
     ax = fig.add_subplot(111, projection='3d')
 
@@ -192,20 +193,36 @@ def vis_3d_multiple_skeleton_with_angles(kpt_3d, kpt_3d_vis, kps_lines, joint_an
             if kpt_3d_vis[n,i2,0] > 0:
                 ax.scatter(kpt_3d[n,i2,0], kpt_3d[n,i2,2], -kpt_3d[n,i2,1], c=colors[l], marker='o')
 
-    # Add joint angle annotations
+    # Add RULA angle annotations
     for n in range(person_num):
-        person_angles = joint_angles[n]
-        for joint_name, angle in person_angles.items():
-            # Get the middle joint of the angle (usually the vertex of the angle)
-            middle_joint = joint_name.split('-')[1]
-            joint_index = JOINTS_NAME.index(middle_joint)
-            
-            # Position the text annotation slightly offset from the joint
-            x, y, z = kpt_3d[n, joint_index]
-            ax.text(x, z, -y, f'{angle:.1f}°', fontsize=8, color='red')
+        person_angles = rula_angles[n]
+        
+        # Upper Arm
+        shoulder = kpt_3d[n, JOINTS_NAME.index('R_Shoulder')]
+        ax.text(shoulder[0], shoulder[2], -shoulder[1], f"UA: {person_angles['upper_arm']:.1f}°", fontsize=8, color='red')
+        
+        # Lower Arm
+        elbow = kpt_3d[n, JOINTS_NAME.index('R_Elbow')]
+        ax.text(elbow[0], elbow[2], -elbow[1], f"LA: {person_angles['lower_arm']:.1f}°", fontsize=8, color='red')
+        
+        # Wrist
+        wrist = kpt_3d[n, JOINTS_NAME.index('R_Wrist')]
+        ax.text(wrist[0], wrist[2], -wrist[1], f"W: {person_angles['wrist']:.1f}°", fontsize=8, color='red')
+        
+        # Neck
+        neck = kpt_3d[n, JOINTS_NAME.index('Thorax')]
+        ax.text(neck[0], neck[2], -neck[1], f"N: {person_angles['neck']:.1f}°", fontsize=8, color='red')
+        
+        # Trunk
+        trunk = kpt_3d[n, JOINTS_NAME.index('Spine')]
+        ax.text(trunk[0], trunk[2], -trunk[1], f"T: {person_angles['trunk']:.1f}°", fontsize=8, color='red')
+        
+        # Leg (binary score)
+        pelvis = kpt_3d[n, JOINTS_NAME.index('Pelvis')]
+        ax.text(pelvis[0], pelvis[2], -pelvis[1], f"L: {person_angles['leg']}", fontsize=8, color='red')
 
     if filename is None:
-        ax.set_title('3D vis')
+        ax.set_title('3D vis with RULA angles')
     else:
         ax.set_title(filename)
 
@@ -214,7 +231,60 @@ def vis_3d_multiple_skeleton_with_angles(kpt_3d, kpt_3d_vis, kps_lines, joint_an
     ax.set_zlabel('Y Label')
 
     plt.show()
-  
+
+def calculate_rula_angles(pose_3d):
+    # Helper function to calculate angle between vectors
+    def angle_between(v1, v2):
+        v1_u = v1 / np.linalg.norm(v1)
+        v2_u = v2 / np.linalg.norm(v2)
+        return np.degrees(np.arccos(np.clip(np.dot(v1_u, v2_u), -1.0, 1.0)))
+
+    # Define vectors
+    torso_vector = pose_3d[JOINTS_NAME.index('Pelvis')] - pose_3d[JOINTS_NAME.index('Thorax')]
+    vertical_vector = np.array([0, -1, 0])  # Assuming Y is vertical in your coordinate system
+    
+    # Upper arm angle (right side, can be adjusted for left)
+    shoulder = pose_3d[JOINTS_NAME.index('R_Shoulder')]
+    elbow = pose_3d[JOINTS_NAME.index('R_Elbow')]
+    upper_arm_vector = elbow - shoulder
+    upper_arm_angle = angle_between(upper_arm_vector, torso_vector) - 90  # Adjust to RULA convention
+    
+    # Lower arm angle
+    wrist = pose_3d[JOINTS_NAME.index('R_Wrist')]
+    lower_arm_vector = wrist - elbow
+    lower_arm_angle = angle_between(upper_arm_vector, lower_arm_vector)
+    
+    # Wrist angle (simplified, may need refinement)
+    hand = pose_3d[JOINTS_NAME.index('R_Hand')]
+    wrist_vector = hand - wrist
+    wrist_angle = angle_between(wrist_vector, lower_arm_vector) - 90
+    
+    # Wrist twist (this is an approximation and may need more sophisticated calculation)
+    wrist_twist_angle = 0  # Placeholder, needs more complex calculation
+    
+    # Neck angle
+    head = pose_3d[JOINTS_NAME.index('Head')]
+    neck_vector = head - pose_3d[JOINTS_NAME.index('Thorax')]
+    neck_angle = angle_between(neck_vector, torso_vector)
+    
+    # Trunk angle
+    trunk_angle = angle_between(torso_vector, vertical_vector)
+    
+    # Leg (simplified to binary: 0 if both feet are at same level, 1 otherwise)
+    left_ankle = pose_3d[JOINTS_NAME.index('L_Ankle')]
+    right_ankle = pose_3d[JOINTS_NAME.index('R_Ankle')]
+    leg_score = 0 if abs(left_ankle[1] - right_ankle[1]) < 10 else 1  # Threshold of 10mm
+
+    return {
+        'upper_arm': upper_arm_angle,
+        'lower_arm': lower_arm_angle,
+        'wrist': wrist_angle,
+        'wrist_twist': wrist_twist_angle,
+        'neck': neck_angle,
+        'trunk': trunk_angle,
+        'leg': leg_score
+    }
+
 def main():
     args = parse_args()
     cfg.set_args(args.gpu_ids)
@@ -231,26 +301,27 @@ def main():
     
     output_pose_2d_list, output_pose_3d_list = process_image(model, original_img, transform, bbox_list, root_depth_list)
     
-    # ------------------------ Print and visualize angles ------------------------ 
-    # print_joint_coordinates(output_pose_3d_list)
-    # print('\n\n')
-    # print_joint_angles(output_pose_3d_list)
+    # Calculate RULA angles for all persons
+    all_rula_angles = [calculate_rula_angles(pose_3d) for pose_3d in output_pose_3d_list]
     
-    # visualize_2d_poses(original_img, output_pose_2d_list, file_name)
-    # visualize_3d_poses(output_pose_3d_list, file_name)
+    # Calculate RULA scores and print results
+    for i, rula_angles in enumerate(all_rula_angles):
+        rula_scores = calculate_rula_score(rula_angles)
+        print(f"Person {i+1}:")
+        print(f"RULA Angles: {rula_angles}")
+        print(f"RULA Score: {rula_scores['final_score']}")
+        print(f"Detailed Scores: {rula_scores}")
+        print()
     
-    # Calculate joint angles for all persons
-    all_joint_angles = [calculate_joint_angles(pose_3d) for pose_3d in output_pose_3d_list]
-    
-    # Use the new visualization function
-    vis_3d_multiple_skeleton_with_angles(
+    # Use the new visualization function with RULA angles
+    vis_3d_multiple_skeleton_with_rula_angles(
         np.array(output_pose_3d_list), 
         np.ones_like(output_pose_3d_list), 
         SKELETON, 
-        all_joint_angles,
-        'output_pose_3d (x,y,z: camera-centered. mm.) with Joint Angles'
+        all_rula_angles,
+        'output_pose_3d (x,y,z: camera-centered. mm.) with RULA Angles'
     )
-    plt.savefig(f'./outputs/{file_name}_3d_output_with_angles.png')
+    plt.savefig(f'./outputs/{file_name}_3d_output_with_rula_angles.png')
 
 if __name__ == "__main__":
     main()
