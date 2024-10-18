@@ -1,5 +1,13 @@
 # 3D Pose Estimation and RULA Assessment
 
+<p align="center">
+<img src="assets/qualitative_intro.PNG" width="800" height="300">
+</p>
+
+<p align="middle">
+<img src="assets/posetrack_1.gif" width="200" height="150"> <img src="assets/posetrack_2.gif" width="200" height="150"><img src="assets/posetrack_3.gif" width="200" height="150"> <img src="assets/posetrack_4.gif" width="200" height="150">
+</p>
+
 ## Project Overview
 
 This research project combines 3D pose estimation with Rapid Upper Limb Assessment (RULA) to evaluate ergonomic risks in various environments. By leveraging advanced computer vision techniques, we aim to automate the process of identifying potentially harmful postures and movements in real-time.
