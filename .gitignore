@@ -1,0 +1,66 @@
+# Start Generation Here
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+*.egg
+*.whl
+*.log
+*.sqlite3
+*.db
+*.DS_Store
+*.env
+*.venv
+*.pytest_cache/
+*.coverage
+*.mypy_cache/
+*.tox/
+*.coverage.*
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+# PyCharm project files
+.idea/
+# VS Code project files
+.vscode/
+# Pytest
+.cache
+# Pyre type checker
+.pyre/
+# mypy
+.mypy_cache/
+# Pylint
+.pylint.d/
+# Coverage reports
+htmlcov/
+# Sphinx documentation
+docs/_build/
+# PyInstaller
+*.spec
+# Cython debug symbols
+cython_debug/
+# Local virtual environment
+venv/
+# Python virtual environment
+env/
+# Pyenv
+.python-version
+# pipenv
+Pipfile.lock
+# poetry
+poetry.lock
+# pyenv-virtualenv
+.venv/
+# pyenv
+.python-version
+# pyenv-virtualenv
+.venv/
+# Local development files
+*.local
+# Backup files
+*~
+# Temporary files
+tmp/
+# End Generation Here

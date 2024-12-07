@@ -1,0 +1,12 @@
+pose_estimation:
+  device: "mps" #"cuda:0"
+  bbox_thr: 0.5
+  kpt_thr: 0.5
+
+input_path: "path/to/your/video.mp4"
+output_path: "path/to/output"
+
+visualization:
+  show: true
+  save: true
+  draw_angles: true

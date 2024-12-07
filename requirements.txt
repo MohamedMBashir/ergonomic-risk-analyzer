@@ -1,0 +1,21 @@
+# Core dependencies
+torch>=1.8.0
+mmcv==2.1.0
+mmdet==3.2.0
+mmpose==1.3.2
+
+# Data handling and computation
+numpy==1.24.4
+scipy>=1.7.0
+pandas>=1.3.0
+
+# Configuration and file handling
+pyyaml>=5.4.0
+
+# Visualization and video processing
+opencv-python>=4.5.0
+matplotlib>=3.4.0
+
+# Optional but recommended for better performance
+# Remove cuda specific packages if using CPU only
+torch-cuda>=1.8.0; platform_system != "Darwin" or platform_machine != "arm64"
