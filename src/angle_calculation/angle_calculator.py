@@ -32,3 +32,27 @@ class AngleCalculator:
         pass
     
     # Add more angle calculation methods
+    
+    
+    
+    
+    
+keypoints = [
+    'bottom_torso',  # 0
+    'left_hip',      # 1
+    'left_knee',     # 2
+    'left_foot',     # 3
+    'right_hip',     # 4
+    'right_knee',    # 5
+    'right_foot',    # 6
+    'center_torso',  # 7
+    'upper_torso',   # 8
+    'neck_base',     # 9
+    'center_head',   # 10
+    'right_shoulder',# 11
+    'right_elbow',   # 12
+    'right_hand',    # 13
+    'left_shoulder', # 14
+    'left_elbow',    # 15
+    'left_hand'      # 16
+]
