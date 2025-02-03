@@ -1,32 +1,35 @@
-from src.pose_estimation.pose_estimator import PoseEstimator
-from src.angle_calculation.angle_calculator import AngleCalculator
-from src.risk_assessment.rula import RULAAssessment
-import yaml
+from pose_estimator import PoseEstimator
+from angle_calculator import AngleCalculator
+from rula import calculate_rula_score
 
 def main():
-    # Load configuration
-    with open('config/config.yaml', 'r') as f:
-        config = yaml.safe_load(f)
+    # Input image path
+    input_image = "./inputs/rula_test_girl.jpg"
     
     # Initialize components
-    pose_estimator = PoseEstimator(config['pose_estimation'])
+    pose_estimator = PoseEstimator()
     angle_calculator = AngleCalculator()
-    risk_assessor = RULAAssessment()
     
-    # Process video/image
-    input_path = config['input_path']
-    results = pose_estimator.process(input_path)
+    # Get pose keypoints
+    keypoints_dict = pose_estimator.estimate_pose(input_image)
     
-    # Calculate angles and assess risk
-    for frame_poses in results:
-        # Calculate joint angles
-        angles = angle_calculator.calculate_angles(frame_poses)
-        
-        # Perform risk assessment
-        risk_score = risk_assessor.assess(angles)
-        
-        # Visualize and store results
-        # ...
+    # Calculate angles from keypoints
+    angles = angle_calculator.calculate_angles(keypoints_dict)
+    
+    # Calculate RULA scores
+    rula_scores = calculate_rula_score(angles)
+    
+    # Print results
+    print("\n=== RULA Assessment Results ===")
+    print(f"Final RULA Score: {rula_scores['final_score']}")
+    print("\nDetailed Angles:")
+    for angle_name, angle_value in angles.items():
+        print(f"{angle_name}: {angle_value:.1f}°")
+    
+    print("\nDetailed Scores:")
+    for score_name, score_value in rula_scores.items():
+        if score_name != 'final_score':  # Skip final score as it's already printed
+            print(f"{score_name}: {score_value}")
 
 if __name__ == "__main__":
     main()

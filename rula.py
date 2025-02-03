@@ -3,7 +3,7 @@ import numpy as np
 def calculate_upper_arm_score(angle):
     if 20 >= angle >= -20:
         return 1
-    elif 45 >= angle > 20 or -20 > angle >= -45:
+    elif 45 >= angle > 20:
         return 2
     elif 90 >= angle > 45:
         return 3
