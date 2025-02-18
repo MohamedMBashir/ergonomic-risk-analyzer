@@ -2,14 +2,14 @@ from mmpose.apis import MMPoseInferencer
 import numpy as np
 
 class PoseEstimator:
-    def __init__(self):
+    def __init__(self, vis_out_dir, pred_out_dir):
         """Initialize the pose estimator with default configuration"""
         self.inferencer = MMPoseInferencer(
             pose3d='human3d',
             device='cpu'  # Default to CPU
         )
-        self.vis_out_dir = './outputs/vis'
-        self.pred_out_dir = './outputs/pred'
+        self.vis_out_dir = vis_out_dir if vis_out_dir else './outputs/vis'
+        self.pred_out_dir = pred_out_dir if pred_out_dir else './outputs/pred'
     
     def estimate_pose(self, input_image, show=False):
         """

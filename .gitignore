@@ -64,3 +64,6 @@ poetry.lock
 # Temporary files
 tmp/
 # End Generation Here
+
+# others
+old_requirements/

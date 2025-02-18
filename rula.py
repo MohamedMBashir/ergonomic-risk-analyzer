@@ -1,20 +1,40 @@
 import numpy as np
 
-def calculate_upper_arm_score(angle):
+def calculate_upper_arm_score(angle, adjustments={}): # ✅ Revised
     if 20 >= angle >= -20:
-        return 1
+        score = 1
+    elif -20 > angle:
+        score =  2
     elif 45 >= angle > 20:
-        return 2
+        score = 2
     elif 90 >= angle > 45:
-        return 3
-    else:
-        return 4
+        score = 3
+    elif 90 < angle:
+        score = 4
 
-def calculate_lower_arm_score(angle):
+    if adjustments.get("shoulder_raised"): # TODO: Implement this in AngleCalculator
+        score += 1
+
+    if adjustments.get("upper_arm_adducted"): # TODO: Implement this in AngleCalculator
+        score += 1
+
+    if adjustments.get("arm_supported_or_leaning"): # TODO: Implement this in AngleCalculator
+        score -= 1
+
+    return score
+
+
+def calculate_lower_arm_score(angle, adjustments={}): # ✅ Revised
     if 100 >= angle >= 60:
-        return 1
+        score = 1
     elif angle > 100 or angle < 60:
-        return 2
+        score = 2
+
+    if adjustments.get("arms_outside_inside"): # TODO: Implement this in AngleCalculator
+        score += 1
+    
+    return score
+    
 
 def calculate_wrist_score(angle):
     if 15 >= angle >= -15:
@@ -155,6 +175,6 @@ angles = {
     'leg': 0
 }
 
-rula_scores = calculate_rula_score(angles)
-print(f"RULA Score: {rula_scores['final_score']}")
-print(f"Detailed Scores: {rula_scores}")
+# rula_scores = calculate_rula_score(angles)
+# print(f"RULA Score: {rula_scores['final_score']}")
+# print(f"Detailed Scores: {rula_scores}")

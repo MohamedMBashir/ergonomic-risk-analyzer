@@ -4,15 +4,15 @@ from rula import calculate_rula_score
 
 def main():
     # Input image path
-    input_image = "./inputs/rula_test_girl.jpg"
+    input_image = "./trial/inputs/women-shrugs.jpg"
     
     # Initialize components
-    pose_estimator = PoseEstimator()
+    pose_estimator = PoseEstimator(vis_out_dir="./trial/outputs/vis", pred_out_dir="./trial/outputs/pred")
     angle_calculator = AngleCalculator()
     
     # Get pose keypoints
     keypoints_dict = pose_estimator.estimate_pose(input_image)
-    
+    print("Keypoints: ", keypoints_dict)
     # Calculate angles from keypoints
     angles = angle_calculator.calculate_angles(keypoints_dict)
     

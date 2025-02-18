@@ -137,26 +137,47 @@ class AngleCalculator:
         return angle
 
  
-    def get_upper_arm_angle(self, keypoints):
-        pass
+    def get_upper_arm_angle(self, keypoints): # ✅ TODO: Must Account for Adjustments
+        point1 = keypoints[keypoints_names.index('right_elbow')]
+        point2 = keypoints[keypoints_names.index('right_shoulder')]
+        point3 = keypoints[keypoints_names.index('center_torso')]
+        return abs(self.calculate_angle_between(point1, point2, point3))
 
-    def get_lower_arm_angle(self, keypoints):
-        pass
-
-    def get_wrist_angle(self, keypoints):
-        pass
-
-    def get_wrist_twist_angle(self, keypoints):
-        pass
+    def get_lower_arm_angle(self, keypoints): # ✅ TODO: Must Account for Adjustments
+        point1 = keypoints[keypoints_names.index('right_shoulder')]
+        point2 = keypoints[keypoints_names.index('right_elbow')]
+        point3 = keypoints[keypoints_names.index('right_hand')]
+        return 180 - abs(self.calculate_angle_between(point1, point2, point3))
 
     def get_neck_angle(self, keypoints):
-        pass
+        point1 = keypoints[keypoints_names.index('center_torso')]
+        point2 = keypoints[keypoints_names.index('upper_torso')]
+        point3 = keypoints[keypoints_names.index('neck_base')]
+        return 180 - abs(self.calculate_angle_between(point1, point2, point3))
 
     def get_trunk_angle(self, keypoints):
-        pass
+        point1 = keypoints[keypoints_names.index('upper_torso')]
+        point2 = keypoints[keypoints_names.index('center_torso')]
+        point3 = keypoints[keypoints_names.index('bottom_torso')]
+        return 180 - abs(self.calculate_angle_between(point1, point2, point3))
+
+    def get_wrist_angle(self, keypoints):
+        point1 = keypoints[keypoints_names.index('right_elbow')]
+        point2 = keypoints[keypoints_names.index('right_hand')]
+        point3 = keypoints[keypoints_names.index('right_shoulder')]
+        return abs(self.calculate_angle_between(point1, point2, point3))
+
+    def get_wrist_twist_angle(self, keypoints):
+        # Wrist twist might require additional data points or different calculation method
+        # For now, returning 0 as placeholder
+        return 0
 
     def get_leg_angle(self, keypoints):
-        pass
+        point1 = keypoints[keypoints_names.index('right_hip')]
+        point2 = keypoints[keypoints_names.index('right_knee')]
+        point3 = keypoints[keypoints_names.index('right_foot')]
+        return 180 - abs(self.calculate_angle_between(point1, point2, point3))
+
 
 
         
