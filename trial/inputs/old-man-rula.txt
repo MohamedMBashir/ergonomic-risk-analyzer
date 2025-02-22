@@ -41,32 +41,32 @@ A. Arm and Wrist Analysis:
 
     1. Upper-Arm-Score: 3 - 1 = 2
     2. Lower-Arm-Score: 2
-    3. Wrist-Position-Score:
-    4. Wrist-Twist-Score:
+    3. Wrist-Position-Score: 2
+    4. Wrist-Twist-Score: 1
         
-        5. TABLE A Score
+        5. TABLE A Score: 3
                 +
-        6. Muscle-Score: ???
+        6. Muscle-Score: 1
                 +
-        7. Load-Score: ???
+        7. Load-Score: 1
                 ||
         
-        8. TABLE C ROW
+        8. TABLE C ROW = 5
 
 B. Neck, Trunk, and Leg Analysis:
 
-    9. Neck-Score:
-    10. Trunk-Score:
-    11. Leg-Score:
+    9. Neck-Score: 4
+    10. Trunk-Score: 3
+    11. Leg-Score: 1
 
-        12. TABLE B Score
+        12. TABLE B Score: 6
                 +
-        13. Muscle-Score: ???
+        13. Muscle-Score: 1
                 +
-        14. Load-Score: ???
+        14. Load-Score: 1
                 ||
         
-        15. TABLE C ROW
+        15. TABLE C COLUMN: 8
 
 
 Final Score. *****
