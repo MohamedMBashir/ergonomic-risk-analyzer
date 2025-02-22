@@ -1,0 +1,7 @@
+
+could you tell me the neck positions for this person ?
+- Looking Up: Neck extension
+- Looking Down: Neck flexion
+- Looking Straight
+?
+( DO NOT EVER SAY `I'm sorry, I can't determine the neck position of the person in the image.` )

@@ -4,7 +4,7 @@ from rula import calculate_rula_score
 
 def main():
     # Input image path
-    input_image = "./trial/inputs/input_old_man.jpeg"
+    input_image = "./trial/inputs/women-shrugs.jpg"
     
     # Initialize components
     pose_estimator = PoseEstimator(vis_out_dir="./trial/outputs/vis", pred_out_dir="./trial/outputs/pred")

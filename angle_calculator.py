@@ -59,17 +59,18 @@ class AngleCalculator:
         keypoints = np.array(keypoints_dict['predictions'][0][0]['keypoints'])
 
         # 2. Rotate keypoints
-        rotated_keypoints = self.rotate_keypoints(keypoints=keypoints, view="side")
+        side_keypoints = self.rotate_keypoints(keypoints=keypoints, view="side")
+        side_keypoints = side_keypoints[:, 1:]
 
         # 3. Calculate angles
         angles = {
-            'upper_arm': self.get_upper_arm_angle(rotated_keypoints),
-            'lower_arm': self.get_lower_arm_angle(rotated_keypoints),
-            'wrist': self.get_wrist_angle(rotated_keypoints),
-            'wrist_twist': self.get_wrist_twist_angle(rotated_keypoints),
-            'neck': self.get_neck_angle(rotated_keypoints),
-            'trunk': self.get_trunk_angle(rotated_keypoints),
-            'leg': self.get_leg_angle(rotated_keypoints)
+            'upper_arm': self.get_upper_arm_angle(side_keypoints),
+            'lower_arm': self.get_lower_arm_angle(side_keypoints),
+            'wrist': self.get_wrist_angle(side_keypoints),
+            'wrist_twist': self.get_wrist_twist_angle(side_keypoints),
+            'neck': self.get_neck_angle(side_keypoints),
+            'trunk': self.get_trunk_angle(side_keypoints),
+            'leg': self.get_leg_angle(side_keypoints)
         }
 
         return angles
@@ -126,10 +127,10 @@ class AngleCalculator:
         vector_2 = keypoint_2 - keypoint_center
         
         # calculate the angle using arctan for robustness
-        angle = np.arctan2(vector_1[1], vector_1[0]) - np.arctan2(vector_2[1], vector_2[0])
+        # angle = np.arctan2(vector_1[1], vector_1[0]) - np.arctan2(vector_2[1], vector_2[0])
         
         # calculate the angle using arccos just to try it out
-        # angle = np.arccos(np.dot(vector_1, vector_2) / (np.linalg.norm(vector_1) * np.linalg.norm(vector_2)))
+        angle = np.arccos(np.dot(vector_1, vector_2) / (np.linalg.norm(vector_1) * np.linalg.norm(vector_2)))
         
         # convert the angle to degrees
         angle = np.degrees(angle)
@@ -166,8 +167,10 @@ class AngleCalculator:
     def get_neck_angle(self, keypoints): 
         point1 = keypoints[keypoints_names.index('center_torso')]
         point2 = keypoints[keypoints_names.index('upper_torso')]
-        point3 = keypoints[keypoints_names.index('neck_base')]
-        return 180 - abs(self.calculate_angle_between(point1, point2, point3))
+        point3 = keypoints[keypoints_names.index('center_head')]
+        angle = 180 - abs(self.calculate_angle_between(point1, point2, point3)) 
+        angle -= 15 # Correction Factor
+        return angle
 
     # ✅ TODO: Do Adjustments
     # NOTE: We must replace right_foot with floor position.
