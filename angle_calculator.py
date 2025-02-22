@@ -163,7 +163,7 @@ class AngleCalculator:
         # For now, returning 0 as placeholder
         return 0
 
-    # ❌ TODO: Need Negative Angle too. TODO: Do Adjustments
+    # ✅ TODO: Do Adjustments
     def get_neck_angle(self, keypoints): 
         point1 = keypoints[keypoints_names.index('center_torso')]
         point2 = keypoints[keypoints_names.index('upper_torso')]
