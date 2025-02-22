@@ -62,7 +62,7 @@ class AngleCalculator:
         side_keypoints = self.rotate_keypoints(keypoints=keypoints, view="side")
         side_keypoints = side_keypoints[:, 1:]
 
-        # 3. Calculate angles
+        # 3. Calculate angles and adjustments
         angles = {
             'upper_arm': self.get_upper_arm_angle(side_keypoints),
             'lower_arm': self.get_lower_arm_angle(side_keypoints),
@@ -73,7 +73,20 @@ class AngleCalculator:
             'leg': self.get_leg_angle(side_keypoints)
         }
 
-        return angles
+        # Add placeholder adjustments
+        adjustments = {
+            'shoulder_raised': 0,
+            'upper_arm_adducted': 0,
+            'arm_supported_or_leaning': 0,
+            'arms_outside_inside': 0,
+            'wrist_bend': 0,
+            'neck_twist': 0,
+            'neck_bended': 0,
+            'trunk_twisted': 0,
+            'trunk_bended': 0
+        }
+
+        return angles, adjustments
     
     def rotate_keypoints(self, keypoints, view="side"):
         right_shoulder_coords = keypoints[keypoints_names.index('right_shoulder')].copy()

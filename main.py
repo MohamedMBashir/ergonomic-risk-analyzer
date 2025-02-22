@@ -4,7 +4,7 @@ from rula import calculate_rula_score
 
 def main():
     # Input image path
-    input_image = "./trial/inputs/women-shrugs.jpg"
+    input_image = "./trial/inputs/input_old_man.jpeg"
     
     # Initialize components
     pose_estimator = PoseEstimator(vis_out_dir="./trial/outputs/vis", pred_out_dir="./trial/outputs/pred")
@@ -14,10 +14,10 @@ def main():
     keypoints_dict = pose_estimator.estimate_pose(input_image)
     print("Keypoints: ", keypoints_dict)
     # Calculate angles from keypoints
-    angles = angle_calculator.calculate_angles(keypoints_dict)
+    angles, adjustments = angle_calculator.calculate_angles(keypoints_dict)
     
     # Calculate RULA scores
-    rula_scores = calculate_rula_score(angles)
+    rula_scores = calculate_rula_score(angles, adjustments=adjustments)
     
     # Print results
     print("\n=== RULA Assessment Results ===")
@@ -30,6 +30,10 @@ def main():
     for score_name, score_value in rula_scores.items():
         if score_name != 'final_score':  # Skip final score as it's already printed
             print(f"{score_name}: {score_value}")
+    
+    print("\nAdjustments:")
+    for adj_name, adj_value in adjustments.items():
+        print(f"{adj_name}: {adj_value}")
 
 if __name__ == "__main__":
     main()

@@ -156,21 +156,26 @@ def get_table_c_score(score_a, score_b): # ✅ Revised
     ])
     return table_c[score_a-1][score_b-1]
 
-def calculate_rula_score(angles, force_l=1, muscle_u=1): # ✅ Revised
+def calculate_rula_score(angles, force_l=1, muscle_u=1, adjustments=None): # Added adjustments parameter
     """
     Calculate RULA score based on joint angles.
     
     :param angles: Dictionary containing joint angles in degrees
+    :param adjustments: Dictionary containing adjustment values
     :return: RULA score and intermediate scores
     """
-    upper_arm_score = calc_upper_arm_score(angles['upper_arm'])
-    lower_arm_score = calc_lower_arm_score(angles['lower_arm'])
-    wrist_score = calc_wrist_score(angles['wrist'])
-    wrist_twist_score = calc_wrist_twist_score(angles['wrist_twist'])
+    # Use empty dict if no adjustments provided
+    if adjustments is None:
+        adjustments = {}
+        
+    upper_arm_score = calc_upper_arm_score(angles['upper_arm'], adjustments)
+    lower_arm_score = calc_lower_arm_score(angles['lower_arm'], adjustments)
+    wrist_score = calc_wrist_score(angles['wrist'], adjustments)
+    wrist_twist_score = calc_wrist_twist_score(angles['wrist_twist'], adjustments)
     
-    neck_score = calc_neck_score(angles['neck'])
-    trunk_score = calc_trunk_score(angles['trunk'])
-    leg_score = calc_leg_score(angles['leg'])
+    neck_score = calc_neck_score(angles['neck'], adjustments)
+    trunk_score = calc_trunk_score(angles['trunk'], adjustments)
+    leg_score = calc_leg_score(angles['leg'], adjustments)
     
     # Assuming minimal force/load and static muscle use
     force_load_score = force_l # NOTE: We need to figure out the proper default
