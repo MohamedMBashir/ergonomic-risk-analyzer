@@ -12,10 +12,10 @@ def calc_upper_arm_score(angle, adjustments={}): # ✅ Revised
     elif 90 < angle:
         score = 4
 
-    if adjustments.get("shoulder_raised"): # TODO: Implement this in AngleCalculator
+    if adjustments.get("shoulder_raised"): # CHECK: Check the thresholds
         score += 1
 
-    if adjustments.get("upper_arm_adducted"): # TODO: Implement this in AngleCalculator
+    if adjustments.get("upper_arm_abducted"): # TODO: Implement this in AngleCalculator
         score += 1
 
     if adjustments.get("arm_supported_or_leaning"): # TODO: Implement this in AngleCalculator
