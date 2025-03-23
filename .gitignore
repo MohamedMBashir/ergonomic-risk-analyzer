@@ -71,6 +71,8 @@ snapshot_24.pth.tar
 yolov8l.pt
 
 data/
+results/
+outputs/
 
 # others
 old_requirements/
