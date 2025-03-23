@@ -82,7 +82,7 @@ class RULAEvaluator:
 
         if adjustments.get("shoulder_raised"):
             score += 1
-        if adjustments.get("upper_arm_adducted"):
+        if adjustments.get("upper_arm_abducted"):
             score += 1
         if adjustments.get("arm_supported_or_leaning"):
             score -= 1
