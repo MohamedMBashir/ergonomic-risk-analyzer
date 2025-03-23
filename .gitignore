@@ -65,5 +65,12 @@ poetry.lock
 tmp/
 # End Generation Here
 
+#models
+snapshot_18.pth.tar
+snapshot_24.pth.tar
+yolov8l.pt
+
+data/
+
 # others
 old_requirements/
